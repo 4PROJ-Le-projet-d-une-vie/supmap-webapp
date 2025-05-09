@@ -1,13 +1,40 @@
 import './App.css'
-import MapView from "./components/MapView.tsx";
+import InteractiveMap from "./components/map/InteractiveMap.tsx";
+import type {Incident} from "./utils/types.ts";
+import client from "./utils/axios.ts";
+import {env} from "./config/env.ts";
+import {useEffect, useState} from "react";
+import type {Point} from "./components/map/MapView.tsx";
+
+const fetchIncidents = async (point: Point, radius: number): Promise<Incident[]> => {
+    const res = await client.get(env.incidentsHost + "/incidents", {
+        params: {
+            include: "summary",
+            lat: point.latitude,
+            lon: point.longitude,
+            radius: radius
+        }
+    })
+
+    return res.data as Incident[]
+}
 
 function App() {
+
+    const [incidents, setIncidents] = useState<Incident[]>([])
+
+    useEffect(() => {
+        fetchIncidents({ latitude: 49.181990815786556, longitude: -0.37112898487149654 }, 40_000)
+            .then(res => setIncidents(res))
+    }, [])
+
     return (
         <div className="w-screen h-screen">
-            <MapView
-            onMapClick={(e) => {
-                console.log(e.lat + ' | ' + e.lon)
-            }}/>
+            <InteractiveMap
+                incidents={incidents}
+                setIncidents={setIncidents}
+                fetchIncidents={fetchIncidents}
+            />
         </div>
     )
 }
