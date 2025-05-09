@@ -1,12 +1,14 @@
-import {MapContainer, Marker, Polyline, TileLayer, useMapEvents} from "react-leaflet";
+import {MapContainer, Marker, Polyline, Popup, TileLayer, useMapEvents} from "react-leaflet";
 import type {LatLngExpression} from "leaflet";
 import L from "leaflet"
 import type {Point} from "../../utils/types.ts";
+import * as React from "react";
 
 export type PointDisplay = {
     id: number
     point: Point
     icon: L.Icon
+    popupContent?: React.ReactNode
 }
 type HandleClick = (point: Point) => void
 type HandleBoundsChanges = (bounds: L.LatLngBounds, zoom: number) => void
@@ -61,7 +63,17 @@ export default function MapView({
                     key={point.id}
                     position={[point.point.latitude, point.point.longitude]}
                     icon={point.icon}
-                />
+                    eventHandlers={{
+                        mouseover: (e) => e.target.openPopup(),
+                        mouseout: (e) => e.target.closePopup(),
+                    }}
+                >
+                    {point.popupContent && (
+                        <Popup>
+                            {point.popupContent}
+                        </Popup>
+                    )}
+                </Marker>
             ))}
             {path?.length > 1 && (
                 <Polyline

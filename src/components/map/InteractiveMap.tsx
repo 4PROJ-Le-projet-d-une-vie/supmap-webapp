@@ -2,6 +2,7 @@ import MapView, {type PointDisplay} from "./MapView.tsx";
 import icons from "./icons.ts";
 import type {GISPoint, Incident, Point, Trip} from "../../utils/types.ts";
 import L from "leaflet";
+import InteractionPopup from "./InteractionPopup.tsx";
 
 export default function InteractiveMap(
     {
@@ -88,7 +89,8 @@ export default function InteractiveMap(
     const incidentsPointsDisplay: PointDisplay[] = incidents.map(i => ({
         id: i.id,
         point: {latitude: i.lat, longitude: i.lon},
-        icon: icons.typesMap[i.type.id]
+        icon: icons.typesMap[i.type.id],
+        popupContent: <InteractionPopup incident={i} />
     }))
 
     const userPointsDisplay: PointDisplay[] = userPoints.map((point, i) => {
