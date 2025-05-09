@@ -1,3 +1,13 @@
+export type Point = {
+    latitude: number
+    longitude: number
+}
+
+export type GISPoint = {
+    lat: number,
+    lon: number
+}
+
 export type User = {
     id: number
     handle: string
@@ -25,4 +35,12 @@ export type Incident = {
     updated_at: Date
     interactions_summary: InteractionSummary
     distance: number
+}
+
+export type Trip = {
+    legs: Leg[]
+}
+
+export type Leg = {
+    shape: Point[]
 }

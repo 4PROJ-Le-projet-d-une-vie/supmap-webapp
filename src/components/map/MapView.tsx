@@ -1,8 +1,8 @@
 import {MapContainer, Marker, Polyline, TileLayer, useMapEvents} from "react-leaflet";
 import type {LatLngExpression} from "leaflet";
 import L from "leaflet"
+import type {Point} from "../../utils/types.ts";
 
-export type Point = { latitude: number, longitude: number }
 export type PointDisplay = {
     id: number
     point: Point
@@ -64,7 +64,10 @@ export default function MapView({
                 />
             ))}
             {path?.length > 1 && (
-                <Polyline positions={path?.map(point => [point.latitude, point.longitude] as LatLngExpression)}/>
+                <Polyline
+                    positions={path?.map(point => [point.latitude, point.longitude] as LatLngExpression)}
+                    color="#57458A"
+                />
             )}
             <MapEventHandler onMapClick={onMapClick} onBoundsChange={onBoundsChange}/>
         </MapContainer>
