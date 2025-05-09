@@ -4,6 +4,9 @@ import type {GISPoint, Incident, Point, Trip} from "./utils/types.ts";
 import client from "./utils/axios.ts";
 import {env} from "./config/env.ts";
 import {useEffect, useState} from "react";
+import Navbar from "./components/Navbar.tsx";
+import DashboardMetrics from "./components/DashboardMetrics.tsx";
+import Footer from "./components/Footer.tsx";
 
 const fetchIncidents = async (point: Point, radius: number): Promise<Incident[]> => {
     const res = await client.get(env.incidentsHost + "/incidents", {
@@ -40,19 +43,40 @@ function App() {
             .then(res => setIncidents(res))
     }, [])
 
-    return (
-        <div className="w-screen h-screen">
-            <InteractiveMap
-                incidents={incidents}
-                setIncidents={setIncidents}
-                fetchIncidents={fetchIncidents}
+    const clearRoute = () => {
+        setUserPoints([])
+        setShapes([])
+    }
 
-                userPoints={userPoints}
-                setUserPoints={setUserPoints}
-                shapes={shapes}
-                setShapes={setShapes}
-                fetchGis={fetchGis}
-            />
+    return (
+        <div className="w-screen h-screen bg-gray-50">
+            <Navbar/>
+            <main className="flex-grow flex flex-col lg:flex-row p-6 gap-6" style={{ height: 'calc(100vh - 144px)' }}>
+                {/* Map container */}
+                <div className="w-full lg:w-3/4 rounded-2xl overflow-hidden shadow-lg border border-gray-200" style={{ height: 'calc(100% - 12px)' }}>
+                    <InteractiveMap
+                        incidents={incidents}
+                        setIncidents={setIncidents}
+                        fetchIncidents={fetchIncidents}
+                        userPoints={userPoints}
+                        setUserPoints={setUserPoints}
+                        shapes={shapes}
+                        setShapes={setShapes}
+                        fetchGis={fetchGis}
+                    />
+                </div>
+
+                {/* Dashboard panel with metrics */}
+                <div className="w-full lg:w-1/4 flex flex-col gap-6 overflow-y-auto">
+                    <DashboardMetrics
+                        incidents={incidents}
+                        userPoints={userPoints}
+                        shapes={shapes}
+                        clearRoute={clearRoute}
+                    />
+                </div>
+            </main>
+            <Footer />
         </div>
     )
 }
