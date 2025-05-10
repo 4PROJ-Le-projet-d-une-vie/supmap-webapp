@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   web:
     image: ghcr.io/4proj-le-projet-d-une-vie/supmap-webapp:latest
