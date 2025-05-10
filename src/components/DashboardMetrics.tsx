@@ -7,8 +7,31 @@ type DashboardProps = {
     clearRoute: () => void
 }
 
+function timeAgo(date: Date): string {
+    const now = new Date()
+    const diffMs = now.getTime() - date.getTime()
+
+    const seconds = Math.floor(diffMs / 1000)
+    const minutes = Math.floor(seconds / 60)
+    const hours = Math.floor(minutes / 60)
+    const days = Math.floor(hours / 24)
+
+    if (days > 0) return `il y a ${days} jour${days > 1 ? 's' : ''}`
+    if (hours > 0) return `il y a ${hours} heure${hours > 1 ? 's' : ''}`
+    if (minutes > 0) return `il y a ${minutes} minute${minutes > 1 ? 's' : ''}`
+    return 'il y a quelques secondes'
+}
 
 export default function DashboardMetrics({ incidents, userPoints, shapes, clearRoute }: DashboardProps) {
+
+    const latestIncident = incidents.length > 0
+        ? [...incidents].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
+        : null
+
+    const timeSinceLastIncident = latestIncident
+        ? timeAgo(new Date(latestIncident.created_at))
+        : 'Aucun incident'
+
     return (
         <div className="flex flex-col lg:flex-row flex-wrap gap-4 w-full max-h-full overflow-auto">
             {/* Incidents metrics card */}
@@ -19,16 +42,16 @@ export default function DashboardMetrics({ incidents, userPoints, shapes, clearR
                             <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                         </svg>
                     </div>
-                    Incidents
+                    Incidents dans la zone
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
                     <div className="bg-gray-50 p-4 rounded-xl hover:bg-gray-100 transition-colors">
-                        <p className="text-sm text-gray-500 mb-1">Nombre total</p>
+                        <p className="text-sm text-gray-500 mb-1">Total</p>
                         <p className="text-2xl font-bold text-[#57458A]">{incidents.length}</p>
                     </div>
                     <div className="bg-gray-50 p-4 rounded-xl hover:bg-gray-100 transition-colors">
                         <p className="text-sm text-gray-500 mb-1">Dernier signalement</p>
-                        <p className="text-2xl font-bold text-[#57458A]">10 min</p>
+                        <p className="text-2xl font-bold text-[#57458A]">{timeSinceLastIncident}</p>
                     </div>
                 </div>
             </div>
