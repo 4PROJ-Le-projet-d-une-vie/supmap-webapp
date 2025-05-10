@@ -9,17 +9,12 @@ COPY . .
 
 RUN npm run build
 
-# Étape 2 : Configurer Nginx sans SSL (HTTP seulement)
+# Expose webapp from Nginx
 FROM nginx:alpine
 
-# Copier la configuration Nginx sans SSL dans le conteneur
-COPY default.conf /etc/nginx/conf.d/default.conf
-
-# Copier le dossier dist depuis le build précédent
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Exposer seulement le port 80 pour HTTP
 EXPOSE 80
+EXPOSE 443
 
-# Démarrer Nginx
 CMD ["nginx", "-g", "daemon off;"]
