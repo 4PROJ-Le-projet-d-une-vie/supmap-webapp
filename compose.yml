@@ -1,9 +1,10 @@
 services:
   web:
-    image: ghcr.io/4proj-le-projet-d-une-vie/supmap-webapp:latest
+#    image: ghcr.io/4proj-le-projet-d-une-vie/supmap-webapp:latest
+    build:
+      context: .
     container_name: supmap-webapp
     ports:
       - "8080:80"
     volumes:
       - ./default.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./env.js:/usr/share/nginx/env.js:ro
