@@ -73,7 +73,7 @@ export default function DashboardMetrics(
         : '- -'
 
     return (
-        <div className="flex flex-col lg:flex-row flex-wrap gap-4 w-full max-h-full overflow-auto">
+        <div className="flex flex-col lg:flex-row flex-wrap gap-4 w-full max-h-full overflow-auto scrollbar-gray">
             {/* Incidents metrics card */}
             <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow flex-grow min-w-[250px] max-w-full">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">

@@ -73,3 +73,27 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+@layer utilities {
+  /* Scrollbar pour Chrome, Edge, Safari */
+  .scrollbar-gray {
+    scrollbar-width: thin; /* Pour Firefox */
+    scrollbar-color: #d1d5db transparent; /* gris-300 sur fond transparent */
+  }
+
+  .scrollbar-gray::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .scrollbar-gray::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-gray::-webkit-scrollbar-thumb {
+    background-color: #d1d5db; /* gray-300 */
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+}
