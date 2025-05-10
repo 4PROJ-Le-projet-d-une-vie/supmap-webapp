@@ -7,6 +7,7 @@ import {useEffect, useState} from "react";
 import Navbar from "./components/Navbar.tsx";
 import DashboardMetrics from "./components/DashboardMetrics.tsx";
 import Footer from "./components/Footer.tsx";
+import QRCodeModal from "./components/QRCodeModal.tsx";
 
 const fetchIncidents = async (point: Point, radius: number): Promise<Incident[]> => {
     const res = await client.get(env.gatewayHost + "/incidents", {
@@ -53,6 +54,7 @@ function App() {
     const [userPoints, setUserPoints] = useState<AddressPoint[]>([])
     const [shapes, setShapes] = useState<Point[]>([])
     const [tripSummary, setTripSummary] = useState<TripSummary | null>(null)
+    const [isQRModalOpen, setIsQRModalOpen] = useState(false);
 
     useEffect(() => {
         fetchIncidents({ latitude: 49.181990815786556, longitude: -0.37112898487149654 }, 40_000)
@@ -62,7 +64,16 @@ function App() {
     const clearRoute = () => {
         setUserPoints([])
         setShapes([])
+        setTripSummary(null)
     }
+
+    const openQRModal = () => {
+        setIsQRModalOpen(true);
+    };
+
+    const closeQRModal = () => {
+        setIsQRModalOpen(false);
+    };
 
     return (
         <div className="w-screen h-screen bg-gray-50">
@@ -92,10 +103,17 @@ function App() {
                         shapes={shapes}
                         clearRoute={clearRoute}
                         tripSummary={tripSummary}
+                        onOpenQRModal={openQRModal}
                     />
                 </div>
             </main>
             <Footer />
+
+            <QRCodeModal
+                isOpen={isQRModalOpen}
+                onClose={closeQRModal}
+                userPoints={userPoints}
+            />
         </div>
     )
 }

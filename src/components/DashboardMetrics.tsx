@@ -6,6 +6,7 @@ type DashboardProps = {
     shapes: Point[];
     clearRoute: () => void
     tripSummary: TripSummary | null
+    onOpenQRModal: () => void;
 }
 
 function timeAgo(date: Date): string {
@@ -45,6 +46,7 @@ export default function DashboardMetrics(
         shapes,
         clearRoute,
         tripSummary,
+        onOpenQRModal,
     }: DashboardProps) {
 
     const latestIncident = incidents.length > 0
@@ -132,6 +134,17 @@ export default function DashboardMetrics(
                             <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                         </svg>
                         Effacer l'itinéraire
+                    </button>
+                    {/* Bouton pour ouvrir la popup QR code */}
+                    <button
+                        className={`w-full py-3 px-4 ${userPoints.length >= 2 ? 'bg-purple-600 hover:bg-purple-700' : 'bg-gray-400 cursor-not-allowed'} text-white rounded-xl transition-colors flex items-center justify-center gap-2 font-medium shadow-sm`}
+                        onClick={userPoints.length >= 2 ? onOpenQRModal : undefined}
+                        disabled={userPoints.length < 2}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 2V5h1v1H5zM3 10a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zm2 2v-1h1v1H5zM9 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1V4zm2 2V5h1v1h-1zM9 10a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-3zm2 2v-1h1v1h-1z" clipRule="evenodd" />
+                        </svg>
+                        Générer un QR code
                     </button>
                 </div>
             </div>

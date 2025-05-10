@@ -54,3 +54,8 @@ export type Trip = {
 export type Leg = {
     shape: Point[]
 }
+
+export type QRCodeData = {
+    name: string
+    locations: GISPoint[]
+}
