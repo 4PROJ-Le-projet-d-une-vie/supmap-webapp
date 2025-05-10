@@ -3,3 +3,5 @@ dist
 .git
 .vscode
 package-lock.json
+env.js
+public/env.js

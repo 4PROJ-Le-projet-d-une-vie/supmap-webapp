@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 
 .env
+env.js
+public/env.js

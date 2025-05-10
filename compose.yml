@@ -6,3 +6,4 @@ services:
       - "8080:80"
     volumes:
       - ./default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./env.js:/usr/share/nginx/env.js:ro
