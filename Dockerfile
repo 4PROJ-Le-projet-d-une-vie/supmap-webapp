@@ -9,15 +9,17 @@ COPY . .
 
 RUN npm run build
 
-# Final image
-FROM node:22-alpine
+# Étape 2 : Configurer Nginx sans SSL (HTTP seulement)
+FROM nginx:alpine
 
-WORKDIR /app
+# Copier la configuration Nginx sans SSL dans le conteneur
+COPY default.conf /etc/nginx/conf.d/default.conf
 
-COPY package.json package-lock.json* ./
-RUN npm install --omit=dev && npm install -g vite   # Install Vite to run easily the app
+# Copier le dossier dist depuis le build précédent
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-COPY --from=builder /app/dist ./dist
+# Exposer seulement le port 80 pour HTTP
+EXPOSE 80
 
-EXPOSE 4173
-CMD ["vite", "preview", "--port", "4173", "--host"]
+# Démarrer Nginx
+CMD ["nginx", "-g", "daemon off;"]
