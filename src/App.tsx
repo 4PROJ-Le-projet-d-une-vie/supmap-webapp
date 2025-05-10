@@ -9,7 +9,7 @@ import DashboardMetrics from "./components/DashboardMetrics.tsx";
 import Footer from "./components/Footer.tsx";
 
 const fetchIncidents = async (point: Point, radius: number): Promise<Incident[]> => {
-    const res = await client.get(env.incidentsHost + "/incidents", {
+    const res = await client.get(env.gatewayHost + "/incidents", {
         params: {
             include: "summary",
             lat: point.latitude,
@@ -22,7 +22,7 @@ const fetchIncidents = async (point: Point, radius: number): Promise<Incident[]>
 }
 
 const fetchGis = async (locations: GISPoint[]) => {
-    const res = await client.post(env.gisHost + "/route", {
+    const res = await client.post(env.gatewayHost + "/route", {
         alternates: 0,
         costing: "auto",
         costing_options: {},
@@ -33,7 +33,7 @@ const fetchGis = async (locations: GISPoint[]) => {
 }
 
 const fetchGeocoding = async (location: Point): Promise<AddressPoint> => {
-    const res = await client.get(env.gisHost + "/address", {
+    const res = await client.get(env.gatewayHost + "/address", {
         params: {
             lat: location.latitude,
             lon: location.longitude,
