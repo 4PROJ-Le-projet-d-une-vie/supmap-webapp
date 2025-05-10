@@ -139,7 +139,7 @@ export default function InteractiveMap(
     }
 
     return (
-        <div className="w-screen h-screen">
+        <div className="w-full h-full">
             <MapView
                 center={{ latitude: 49.1833, longitude: -0.35 }}
                 zoom={13}
