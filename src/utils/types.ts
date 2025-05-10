@@ -41,8 +41,14 @@ export type Incident = {
     distance: number
 }
 
+export type TripSummary = {
+    length: number
+    time: number
+}
+
 export type Trip = {
     legs: Leg[]
+    summary: TripSummary
 }
 
 export type Leg = {

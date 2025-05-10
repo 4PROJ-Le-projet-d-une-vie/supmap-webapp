@@ -1,10 +1,11 @@
-import type {Incident, Point} from "../utils/types.ts";
+import type {Incident, Point, TripSummary} from "../utils/types.ts";
 
 type DashboardProps = {
     incidents: Incident[];
     userPoints: Point[];
     shapes: Point[];
     clearRoute: () => void
+    tripSummary: TripSummary | null
 }
 
 function timeAgo(date: Date): string {
@@ -22,7 +23,29 @@ function timeAgo(date: Date): string {
     return 'il y a quelques secondes'
 }
 
-export default function DashboardMetrics({ incidents, userPoints, shapes, clearRoute }: DashboardProps) {
+function formatDuration(seconds: number): string {
+    const totalMinutes = Math.ceil(seconds / 60)
+
+    if (totalMinutes < 60) {
+        return `${totalMinutes} min`
+    }
+
+    const hours = Math.floor(totalMinutes / 60)
+    const remainingMinutes = totalMinutes % 60
+
+    return remainingMinutes > 0
+        ? `${hours} h ${remainingMinutes} min`
+        : `${hours} h`
+}
+
+export default function DashboardMetrics(
+    {
+        incidents,
+        userPoints,
+        shapes,
+        clearRoute,
+        tripSummary,
+    }: DashboardProps) {
 
     const latestIncident = incidents.length > 0
         ? [...incidents].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
@@ -31,6 +54,21 @@ export default function DashboardMetrics({ incidents, userPoints, shapes, clearR
     const timeSinceLastIncident = latestIncident
         ? timeAgo(new Date(latestIncident.created_at))
         : 'Aucun incident'
+
+    const routeDistanceUnit: string = tripSummary && shapes.length > 0
+        ? tripSummary.length < 1
+            ? ' m'
+            : ' km'
+        : ' -'
+    const routeDistance = tripSummary && shapes.length > 0
+        ? tripSummary.length < 1
+            ? tripSummary.length * 1000
+            : tripSummary.length.toFixed(1).replace(".", ",")
+        : '-'
+
+    const routeTime = tripSummary && shapes.length > 0
+        ? formatDuration(tripSummary?.time)
+        : '- -'
 
     return (
         <div className="flex flex-col lg:flex-row flex-wrap gap-4 w-full max-h-full overflow-auto">
@@ -73,11 +111,11 @@ export default function DashboardMetrics({ incidents, userPoints, shapes, clearR
                     </div>
                     <div className="bg-gray-50 p-4 rounded-xl hover:bg-gray-100 transition-colors">
                         <p className="text-sm text-gray-500 mb-1">Distance totale</p>
-                        <p className="text-2xl font-bold text-[#57458A]">{shapes.length > 0 ? '12.3 km' : '0 km'}</p>
+                        <p className="text-2xl font-bold text-[#57458A]">{routeDistance} {routeDistanceUnit}</p>
                     </div>
                     <div className="bg-gray-50 p-4 rounded-xl hover:bg-gray-100 transition-colors">
                         <p className="text-sm text-gray-500 mb-1">Temps estimé</p>
-                        <p className="text-2xl font-bold text-[#57458A]">{shapes.length > 0 ? '25 min' : '0 min'}</p>
+                        <p className="text-2xl font-bold text-[#57458A]">{routeTime}</p>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 import './App.css'
 import InteractiveMap from "./components/map/InteractiveMap.tsx";
-import type {AddressPoint, GISPoint, Incident, Point, Trip} from "./utils/types.ts";
+import type {AddressPoint, GISPoint, Incident, Point, Trip, TripSummary} from "./utils/types.ts";
 import client from "./utils/axios.ts";
 import {env} from "./config/env.ts";
 import {useEffect, useState} from "react";
@@ -52,6 +52,7 @@ function App() {
     const [incidents, setIncidents] = useState<Incident[]>([])
     const [userPoints, setUserPoints] = useState<AddressPoint[]>([])
     const [shapes, setShapes] = useState<Point[]>([])
+    const [tripSummary, setTripSummary] = useState<TripSummary | null>(null)
 
     useEffect(() => {
         fetchIncidents({ latitude: 49.181990815786556, longitude: -0.37112898487149654 }, 40_000)
@@ -79,6 +80,7 @@ function App() {
                         setShapes={setShapes}
                         fetchGis={fetchGis}
                         fetchGeocode={fetchGeocoding}
+                        setTripSummary={setTripSummary}
                     />
                 </div>
 
@@ -89,6 +91,7 @@ function App() {
                         userPoints={userPoints}
                         shapes={shapes}
                         clearRoute={clearRoute}
+                        tripSummary={tripSummary}
                     />
                 </div>
             </main>

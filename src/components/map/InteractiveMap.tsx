@@ -1,6 +1,6 @@
 import MapView, {type PointDisplay} from "./MapView.tsx";
 import icons from "./icons.ts";
-import type {AddressPoint, GISPoint, Incident, Point, Trip} from "../../utils/types.ts";
+import type {AddressPoint, GISPoint, Incident, Point, Trip, TripSummary} from "../../utils/types.ts";
 import L from "leaflet";
 import InteractionPopup from "./InteractionPopup.tsx";
 
@@ -16,6 +16,7 @@ export default function InteractiveMap(
         setShapes,
         fetchGis,
         fetchGeocode,
+        setTripSummary,
     }:
     {
         incidents: Incident[]
@@ -28,6 +29,7 @@ export default function InteractiveMap(
         setShapes: (points: Point[]) => void
         fetchGis: (points: GISPoint[]) => Promise<Trip[]>
         fetchGeocode: (point: Point) => Promise<AddressPoint>
+        setTripSummary: (summary: TripSummary) => void
     }) {
 
     const handleClick = async (p: Point) => {
@@ -41,6 +43,10 @@ export default function InteractiveMap(
                 })))
                 const polyline = res.flatMap(trip => trip.legs.flatMap(leg => leg.shape))
                 setShapes(polyline)
+
+                const length = res.reduce((sum, trip) => sum + trip.summary.length, 0)
+                const time = res.reduce((sum, trip) => sum + trip.summary.time, 0)
+                setTripSummary({ length, time})
             } catch (err) {
                 return
             }
