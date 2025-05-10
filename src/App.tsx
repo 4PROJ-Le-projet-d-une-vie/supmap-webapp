@@ -1,6 +1,6 @@
 import './App.css'
 import InteractiveMap from "./components/map/InteractiveMap.tsx";
-import type {GISPoint, Incident, Point, Trip} from "./utils/types.ts";
+import type {AddressPoint, GISPoint, Incident, Point, Trip} from "./utils/types.ts";
 import client from "./utils/axios.ts";
 import {env} from "./config/env.ts";
 import {useEffect, useState} from "react";
@@ -32,10 +32,25 @@ const fetchGis = async (locations: GISPoint[]) => {
     return res.data.data as Trip[]
 }
 
+const fetchGeocoding = async (location: Point): Promise<AddressPoint> => {
+    const res = await client.get(env.gisHost + "/address", {
+        params: {
+            lat: location.latitude,
+            lon: location.longitude,
+        }
+    })
+
+    return {
+        latitude: location.latitude,
+        longitude: location.longitude,
+        address: res.data.display_name as string
+    }
+}
+
 function App() {
 
     const [incidents, setIncidents] = useState<Incident[]>([])
-    const [userPoints, setUserPoints] = useState<Point[]>([])
+    const [userPoints, setUserPoints] = useState<AddressPoint[]>([])
     const [shapes, setShapes] = useState<Point[]>([])
 
     useEffect(() => {
@@ -63,6 +78,7 @@ function App() {
                         shapes={shapes}
                         setShapes={setShapes}
                         fetchGis={fetchGis}
+                        fetchGeocode={fetchGeocoding}
                     />
                 </div>
 

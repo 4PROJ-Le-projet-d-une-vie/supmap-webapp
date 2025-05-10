@@ -1,6 +1,6 @@
 import MapView, {type PointDisplay} from "./MapView.tsx";
 import icons from "./icons.ts";
-import type {GISPoint, Incident, Point, Trip} from "../../utils/types.ts";
+import type {AddressPoint, GISPoint, Incident, Point, Trip} from "../../utils/types.ts";
 import L from "leaflet";
 import InteractionPopup from "./InteractionPopup.tsx";
 
@@ -14,22 +14,24 @@ export default function InteractiveMap(
         setUserPoints,
         shapes,
         setShapes,
-        fetchGis
+        fetchGis,
+        fetchGeocode,
     }:
     {
         incidents: Incident[]
         setIncidents: (incidents: Incident[]) => void
         fetchIncidents: (point: Point, radius: number) => Promise<Incident[]>
 
-        userPoints: Point[]
-        setUserPoints: (points: Point[]) => void
+        userPoints: AddressPoint[]
+        setUserPoints: (points: AddressPoint[]) => void
         shapes: Point[]
         setShapes: (points: Point[]) => void
         fetchGis: (points: GISPoint[]) => Promise<Trip[]>
+        fetchGeocode: (point: Point) => Promise<AddressPoint>
     }) {
 
     const handleClick = async (p: Point) => {
-        const updatedPoints = [...userPoints, p]
+        const updatedPoints = [...userPoints, await fetchGeocode(p)]
 
         if (updatedPoints.length > 1) {
             try {
@@ -108,10 +110,13 @@ export default function InteractiveMap(
             id: 10_000 + i,
             point: {
                 latitude: point.latitude,
-                longitude:
-                point.longitude,
+                longitude: point.longitude,
             },
-            icon: icon
+            icon: icon,
+            popupContent: (isFirst || isLast
+                ? <>📍 <strong>Adresse </strong><br/>{(point as AddressPoint).address}</>
+                : null
+            )
         }
     })
 

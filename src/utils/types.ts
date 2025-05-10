@@ -8,6 +8,10 @@ export type GISPoint = {
     lon: number
 }
 
+export interface AddressPoint extends Point {
+    address: string
+}
+
 export type User = {
     id: number
     handle: string
