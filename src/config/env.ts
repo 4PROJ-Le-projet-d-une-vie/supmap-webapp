@@ -1,3 +1,3 @@
 export const env = {
-    gatewayHost: "http://localhost:9000",
+    gatewayHost: "http://91.99.89.61:9000",
 };
