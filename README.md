@@ -1,54 +1,110 @@
-# React + TypeScript + Vite
+# supmap-webapp
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Vue d'ensemble
+Supmap est une application web de cartographie interactive permettant aux utilisateurs de visualiser des incidents, créer des itinéraires et partager des trajets via QR code.
 
-Currently, two official plugins are available:
+## Architecture des Composants
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+L'application web est composée d'une seule page. Tous ses éléments sont imbriquées les uns dans les autres selon cette architecture :
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```mermaid
+graph TD
+    A[App] --> B[Navbar]
+    A --> C[Main Content]
+    A --> D[Footer]
+    C --> E[InteractiveMap]
+    C --> F[DashboardMetrics]
+    C --> G[QRCodeModal]
+    E --> H[MapView]
+    E --> I[InteractionPopup]
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Technologies Utilisées
+- **Frontend**: React (v19)
+- **Cartographie**: Leaflet avec React-Leaflet
+- **Styling**: TailwindCSS
+- **État Global**: Zustand
+- **Requêtes API**: Axios, TanStack Query
+- **Build Tool**: Vite
+- **QR Code**: react-qr-code
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Structure du Projet
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+### Composants Principaux
+
+#### 1. App (`src/App.tsx`)
+- Composant racine de l'application
+- Gère l'état global des incidents, points utilisateur et formes
+- Coordonne les interactions entre les composants
+
+#### 2. InteractiveMap (`src/components/map/InteractiveMap.tsx`)
+- Gère la carte interactive
+- Fonctionnalités :
+    - Affichage des incidents
+    - Création d'itinéraires
+    - Gestion des points utilisateur
+    - Calcul de trajets
+
+#### 3. DashboardMetrics (`src/components/DashboardMetrics.tsx`)
+- Affiche les métriques et statistiques
+- Fonctionnalités :
+    - Nombre d'incidents
+    - Détails de l'itinéraire
+    - Actions rapides (effacer l'itinéraire, générer QR)
+
+### Composants Auxiliaires
+
+#### 4. MapView (`src/components/map/MapView.tsx`)
+- Rendu de la carte Leaflet
+- Gestion des événements de carte
+- Affichage des marqueurs et polylines
+
+#### 5. QRCodeModal (`src/components/QRCodeModal.tsx`)
+- Modal pour générer des QR codes d'itinéraires
+- Validation du nom d'itinéraire
+- Génération du QR code
+
+## Fonctionnalités Clés
+
+### 1. Gestion des Incidents
+- Affichage des incidents sur la carte
+- Filtrage par zone géographique
+- Popup d'information détaillée
+- Mise à jour en temps réel
+
+### 2. Système de Routage
+- Création d'itinéraires personnalisés
+- Calcul automatique des trajets
+- Affichage des distances et temps estimés
+- Points de passage multiples
+
+### 3. Partage d'Itinéraires
+- Génération de QR codes
+- Sauvegarde des informations de route
+- Interface modale dédiée
+
+### 4. Interface Utilisateur
+- Design responsive
+- Navigation intuitive
+- Métriques en temps réel
+- Thème personnalisé
+
+### 5. Authentification
+- Gestion des tokens JWT
+- Refresh token automatique
+- Interception des requêtes Axios
+
+## Configuration et Environnement
+
+### Variables d'Environnement
+
+Les variables d'environnement pour une application frontend avec Vite sont complexes à gérer. Les variables d'environnement sont injectés dans le code transpilé durant le build.
+Dans notre cas, la seule variable d'environnement nécessaire est l'URL vers la gateway qui expose les services.
+Nous avons jugé que cette variable n'est en aucun cas critique et avons pris la décision de définir la valeur de cette variable en dur dans le fichier d'environnement Typescript de l'application.
+
+```typescript
+// src/config/env.ts
+export const env = {
+    gatewayHost: "http://localhost:9000",
+};
 ```
