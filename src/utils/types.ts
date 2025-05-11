@@ -57,5 +57,5 @@ export type Leg = {
 
 export type QRCodeData = {
     name: string
-    locations: GISPoint[]
+    route: GISPoint[]
 }

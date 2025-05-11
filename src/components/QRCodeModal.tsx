@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import type {Point} from "../utils/types.ts";
+import type {Point, QRCodeData} from "../utils/types.ts";
 import QRCode from "react-qr-code";
 type QRCodeModalProps = {
     isOpen: boolean;
@@ -47,9 +47,9 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({ isOpen, onClose, userPoints }
         lon: point.longitude
     }));
 
-    const qrData = {
+    const qrData: QRCodeData = {
         name: routeName,
-        locations: convertedPoints
+        route: convertedPoints
     };
 
     const serializedQRCode = JSON.stringify(qrData);
