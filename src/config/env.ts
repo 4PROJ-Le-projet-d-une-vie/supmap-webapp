@@ -1,3 +1,3 @@
 export const env = {
-    gatewayHost: "http://localhost:9000",
+    gatewayHost: "http://supmap-gateway:80",
 };
