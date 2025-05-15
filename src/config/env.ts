@@ -1,3 +1,3 @@
 export const env = {
-    gatewayHost: "https://91.99.89.61:9000",
+    gatewayHost: "https://supmap.zencraft.org:9000",
 };
